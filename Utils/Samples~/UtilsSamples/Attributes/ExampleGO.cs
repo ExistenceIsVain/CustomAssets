@@ -28,7 +28,7 @@ namespace Utils.Samples.Attributes
         [SerializeReference, SubclassDrawer] public ExampleClass effect = new HealEffect();
         [SerializeReference, SubclassDrawer] public ExampleClass[] extraEffects = new ExampleClass[0];
 
-        [Header("SOGroup — группа в Tools > Scriptable Object Editor")]
+        [Header("SOGroup + SOSubGroup — группа в Tools > Scriptable Object Editor")]
         public ExampleSO config;
 
         [ContextMenu("Apply Effect")]

@@ -19,7 +19,7 @@
 
 | Модуль | Namespace | Что делает | Документация | Папка сэмпла |
 |---|---|---|---|---|
-| Атрибуты инспектора | `Utils` | `[EditorReadOnly]`, `[MinMaxRange]`, `[SteppedRange]`, `[StringConstant]` + `[Region]`, `[SubclassDrawer]`, `[SOGroup]` | [Attributes.md](Documentation/Attributes.md) | `Attributes` |
+| Атрибуты инспектора | `Utils` | `[EditorReadOnly]`, `[MinMaxRange]`, `[SteppedRange]`, `[StringConstant]` + `[Region]`, `[SubclassDrawer]`, `[SOGroup]` + `[SOSubGroup]` | [Attributes.md](Documentation/Attributes.md) | `Attributes` |
 | LayerMaskExtensions | `Utils` | `mask.Contains(gameObject)`, `mask.Contains(component)`, `mask.ToSingleLayer()` | [LayerMaskExtensions.md](Documentation/LayerMaskExtensions.md) | `LayerMasks` |
 | FastCooldown | `Utils.Cooldowns` | кулдауны по игровому времени: атака, дэш, антиспам UI | [FastCooldown.md](Documentation/FastCooldown.md) | `FastCooldowns` |
 | GlobalCooldown | `Utils.Cooldowns` | кулдауны по настенным часам с сохранением: дейли, энергия, бустеры | [GlobalCooldown.md](Documentation/GlobalCooldown.md) | `GlobalCooldowns` |
@@ -41,7 +41,7 @@
 
 | Папка | Префаб | Что показывает |
 |---|---|---|
-| `Attributes` | `AttributesExample` | все атрибуты на одном компоненте, `ExampleConfig` с `[SOGroup]` |
+| `Attributes` | `AttributesExample` | все атрибуты на одном компоненте, `ExampleConfig` с `[SOGroup]` и `[SOSubGroup]` |
 | `LayerMasks` | `LayerMaskExample` | зона-триггер по маске, цели в радиусе, шары со слоем из `ToSingleLayer` |
 | `FastCooldowns` | `FastCooldownExample` | меч опускается при ударе и поднимается по мере перезарядки, рывок по реальному времени |
 | `GlobalCooldowns` | `GlobalCooldownExample` | сундук с ежедневной наградой и энергия, переживают перезапуск |
@@ -50,6 +50,7 @@
 | `Async` | `GlobalAsyncExample` | теги Restart/Skip, Delay, WaitUntil, фоновый поток, отмена |
 | `Gizmo` | `GizmoExample` | настроенная разметка врага и свой отрисовщик |
 | `SerializeReferenceList` | `SerializeReferenceListExample` | катсцена из шагов со своим инспектором, проигрывается по Play |
+| `SOEditor` | — | конфиги оружия и зелий для `Tools > Scriptable Object Editor`: группа Weapon с сабгруппами Enemy, Player, Boss и Ungrouped / Consumables |
 
 В каждой папке — `ExampleClass` (обычный C#-класс: сервис, данные, база иерархии) и
 `ExampleGO` (компонент префаба), в своём namespace `Utils.Samples.<Модуль>`.

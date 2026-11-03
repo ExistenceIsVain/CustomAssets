@@ -7,7 +7,7 @@
 `[Space]`) совмещаются с любым.
 
 Пример — сэмпл **Utils Samples**, папка `Attributes`, префаб `AttributesExample`: `ExampleGO` со всеми атрибутами на полях, `ExampleClass` —
-иерархия для `[SubclassDrawer]` и константы для `[StringConstant]`, `ExampleSO` — `[SOGroup]`.
+иерархия для `[SubclassDrawer]` и константы для `[StringConstant]`, `ExampleSO` — `[SOGroup]` и `[SOSubGroup]`.
 
 ## EditorReadOnly
 
@@ -97,13 +97,24 @@ public static class AnimatorParams
 - После «+» или Duplicate элементы, указывающие на один экземпляр, получают свои копии.
 - Смена типа поддерживает Undo и мультивыделение.
 
-## SOGroup
+## SOGroup и SOSubGroup
 
-Группа класса ScriptableObject в окне `Tools > Scriptable Object Editor`. Наследуется.
+Группа и сабгруппа класса ScriptableObject в окне `Tools > Scriptable Object Editor` — два уровня,
+как папки в окне Project.
 
 ```csharp
-[SOGroup("Balance")]
-public class WeaponConfig : ScriptableObject { }
+[SOGroup("Weapon")]
+public abstract class WeaponConfig : ScriptableObject { }
+
+[SOSubGroup("Enemy")]  public class EnemyWeaponConfig : WeaponConfig { }   // Weapon / Enemy
+[SOSubGroup("Player")] public class PlayerWeaponConfig : WeaponConfig { }  // Weapon / Player
+[SOSubGroup("Boss")]   public class BossWeaponConfig : EnemyWeaponConfig { } // Weapon / Boss
 ```
 
-Без атрибута ассет попадает в группу «Ungrouped». Само окно описано в [EditorWindows.md](EditorWindows.md).
+- **Группа задаётся один раз** — самым базовым классом с `[SOGroup]`. Наследник её не меняет:
+  `[SOGroup]` с другим именем на наследнике игнорируется, в консоль — предупреждение.
+- **Сабгруппа наследуется и переопределяется** — берётся у ближайшего класса с `[SOSubGroup]`.
+- Без `[SOGroup]` ассет попадает в группу «Ungrouped», с `[SOSubGroup]` — в её сабгруппу.
+- В группе сначала сабгруппы, потом ассеты без сабгруппы; «Ungrouped» — последней.
+
+Пример — сэмпл **Utils Samples**, папка `SOEditor`: те же классы и готовые ассеты в `Configs`. Само окно описано в [EditorWindows.md](EditorWindows.md).

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,6 +7,8 @@ namespace Utils.EditorTools
 {
     public class ScriptableObjectListPanel
     {
+        private const float IndentWidth = 14f;
+
         private readonly Dictionary<string, bool> _foldouts = new();
         private Vector2 _scrollList;
 
@@ -25,9 +26,9 @@ namespace Utils.EditorTools
             GUILayout.Label($"Scriptable Objects ({catalog.ScriptableObjects.Count})", EditorStyles.boldLabel);
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Expand All", EditorStyles.miniButtonLeft))
-                SetAllFoldouts(catalog.GroupedScriptableObjects, true);
+                SetAllFoldouts(catalog.Groups, true);
             if (GUILayout.Button("Collapse All", EditorStyles.miniButtonRight))
-                SetAllFoldouts(catalog.GroupedScriptableObjects, false);
+                SetAllFoldouts(catalog.Groups, false);
             GUILayout.EndHorizontal();
             registerContextBlocker?.Invoke(GUILayoutUtility.GetLastRect());
 
@@ -39,17 +40,22 @@ namespace Utils.EditorTools
             }
             else
             {
-                DrawGroupedList(catalog.GroupedScriptableObjects, selectedSO, onSelect, registerContextBlocker);
+                DrawGroupedList(catalog.Groups, selectedSO, onSelect, registerContextBlocker);
             }
 
             GUILayout.EndScrollView();
             GUILayout.EndVertical();
         }
 
-        private void SetAllFoldouts(IReadOnlyDictionary<string, List<ScriptableObject>> groupedSOs, bool expanded)
+        private void SetAllFoldouts(IReadOnlyList<ScriptableObjectGroup> groups, bool expanded)
         {
-            foreach (var group in groupedSOs.Keys)
-                _foldouts[group] = expanded;
+            foreach (var group in groups)
+            {
+                _foldouts[group.Name] = expanded;
+
+                foreach (var subGroup in group.SubGroups.Keys)
+                    _foldouts[SubGroupKey(group.Name, subGroup)] = expanded;
+            }
         }
 
         private void DrawSearchResults(
@@ -73,35 +79,66 @@ namespace Utils.EditorTools
         }
 
         private void DrawGroupedList(
-            IReadOnlyDictionary<string, List<ScriptableObject>> groupedSOs,
+            IReadOnlyList<ScriptableObjectGroup> groups,
             ScriptableObject selectedSO,
             Action<ScriptableObject> onSelect,
             Action<Rect> registerContextBlocker)
         {
-            foreach (var group in groupedSOs.Keys.OrderBy(g => g))
+            foreach (var group in groups)
             {
-                var items = groupedSOs[group];
-
-                if (!_foldouts.ContainsKey(group))
-                    _foldouts[group] = true;
-
-                _foldouts[group] = EditorGUILayout.Foldout(_foldouts[group], group, true, EditorStyles.foldoutHeader);
-                registerContextBlocker?.Invoke(GUILayoutUtility.GetLastRect());
-
-                if (!_foldouts[group])
+                if (!DrawFoldout(group.Name, group.Name, 0, EditorStyles.foldoutHeader, registerContextBlocker))
                     continue;
 
-                EditorGUI.indentLevel++;
-                foreach (var so in items)
+                // Как в окне Project: сначала сабгруппы, потом ассеты без сабгруппы.
+                foreach (var subGroup in group.SubGroups)
                 {
-                    if (so == null)
+                    string key = SubGroupKey(group.Name, subGroup.Key);
+                    if (!DrawFoldout(key, subGroup.Key, 1, EditorStyles.foldout, registerContextBlocker))
                         continue;
 
-                    DrawSOButton(so, selectedSO, onSelect, registerContextBlocker);
+                    DrawItems(subGroup.Value, 2, selectedSO, onSelect, registerContextBlocker);
                 }
-                EditorGUI.indentLevel--;
+
+                DrawItems(group.Items, 1, selectedSO, onSelect, registerContextBlocker);
             }
         }
+
+        private bool DrawFoldout(string key, string label, int indent, GUIStyle style, Action<Rect> registerContextBlocker)
+        {
+            if (!_foldouts.TryGetValue(key, out bool expanded))
+                expanded = true;
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(indent * IndentWidth);
+            expanded = EditorGUILayout.Foldout(expanded, label, true, style);
+            GUILayout.EndHorizontal();
+            registerContextBlocker?.Invoke(GUILayoutUtility.GetLastRect());
+
+            _foldouts[key] = expanded;
+            return expanded;
+        }
+
+        private static void DrawItems(
+            IReadOnlyList<ScriptableObject> items,
+            int indent,
+            ScriptableObject selectedSO,
+            Action<ScriptableObject> onSelect,
+            Action<Rect> registerContextBlocker)
+        {
+            foreach (var so in items)
+            {
+                if (so == null)
+                    continue;
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(indent * IndentWidth);
+                DrawSOButton(so, selectedSO, onSelect, registerContextBlocker);
+                GUILayout.EndHorizontal();
+            }
+        }
+
+        // Перевода строки нет в именах групп из атрибутов: ключи групп и сабгрупп не пересекутся.
+        private static string SubGroupKey(string group, string subGroup) => group + '\n' + subGroup;
 
         private static void DrawSOButton(
             ScriptableObject so,

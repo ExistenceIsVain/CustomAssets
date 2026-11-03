@@ -3,10 +3,11 @@ using UnityEngine;
 namespace Utils.Samples.Attributes
 {
     /// <summary>
-    /// [SOGroup] задаёт группу ассета в окне Tools > Scriptable Object Editor.
+    /// [SOGroup] и [SOSubGroup] задают группу и сабгруппу ассета в окне Tools > Scriptable Object Editor.
     /// Создать: ПКМ в Project → Create → Utils Samples → Example Config.
     /// </summary>
     [SOGroup("Samples")]
+    [SOSubGroup("Attributes")]
     [CreateAssetMenu(menuName = "Utils Samples/Example Config", fileName = "ExampleConfig")]
     public class ExampleSO : ScriptableObject
     {
