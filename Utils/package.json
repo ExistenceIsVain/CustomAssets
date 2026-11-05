@@ -1,6 +1,6 @@
 {
   "name": "com.existenceisvain.utils",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "displayName": "Utils",
   "description": "Общий набор утилит для Unity-проектов: атрибуты и дроверы инспектора, кулдауны, тик-система, шина сообщений Transmitter, асинхронные задачи с владельцем, гизмо-разметка и окна редактора.",
   "unity": "6000.0",
@@ -16,6 +16,11 @@
       "displayName": "Utils Samples",
       "description": "Демо-сцена со всеми модулями и готовые префабы: атрибуты, LayerMask, кулдауны, тик, Transmitter, GlobalAsync, гизмо, список SerializeReference. Открой UtilsDemo.unity и нажми Play.",
       "path": "Samples~/UtilsSamples"
+    },
+    {
+      "displayName": "ProjectUI",
+      "description": "Основа uGUI: ScreenManager, UIScreen, IAcceptArg / IReturnResult, ScreenHistory, ScreenClamp, WorldUiRotator. Ставится в Assets/ProjectUI (не в Assets/Samples); повторный Import обновляет файлы, сохраняя GUID.",
+      "path": "Samples~/ProjectUI"
     }
   ]
 }

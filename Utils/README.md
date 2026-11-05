@@ -32,8 +32,33 @@
 
 ## Сэмплы
 
-`Window > Package Manager` → Utils → вкладка **Samples** → **Utils Samples** → **Import**.
-Сэмпл копируется в `Assets/Samples/Utils/<версия>/Utils Samples/` и компилируется вместе с проектом.
+`Window > Package Manager` → Utils → вкладка **Samples** → кнопка **Import** у нужного сэмпла.
+
+| Сэмпл | Куда ставится | Что это |
+|---|---|---|
+| **Utils Samples** | `Assets/Samples/Utils/<версия>/Utils Samples/` | демо-сцена и примеры всех модулей (ниже) |
+| **ProjectUI** | `Assets/ProjectUI/` | основа uGUI для проекта — см. «ProjectUI» ниже |
+
+### ProjectUI
+
+Основа экранов на uGUI: `ScreenManager` (собирает экраны, открывает и закрывает по типу), `UIScreen`
+(база экрана с хуками `OnSetup` … `OnAfterClose` и переходами), `IAcceptArg<T>` / `IReturnResult<T>`,
+`ScreenHistory`, `ScreenClamp` (держать попап в экране), `WorldUiRotator` (UI в мире, повёрнутый к камере).
+Namespace `ProjectUI`, без asmdef — компилируется в Assembly-CSharp; нужен TextMeshPro (входит в `com.unity.ugui`).
+
+Это не пример, а код проекта: после импорта папка твоя, её можно править. Unity копирует сэмпл в
+`Assets/Samples/…`, а `SampleRelocator` сразу переносит его в `Assets/ProjectUI` и удаляет пустые папки `Samples`.
+Package Manager после этого снова показывает **Import** — это обновление:
+
+- `Assets/ProjectUI` нет → папка просто переносится;
+- есть → окно «Обновить?»: файлы с тем же именем перезаписываются (свои правки в них пропадут), новые
+  добавляются, `.meta` и GUID остаются прежними, файлы, которых нет в пакете, не трогаются; «Отмена» —
+  импортированная копия удаляется.
+
+Во время обновления в консоли может мелькнуть ошибка о двойном объявлении типов и предупреждение о
+конфликте GUID: это импортированная копия до переноса, после обновления они уходят.
+
+### Utils Samples
 
 Открой `UtilsDemo.unity` и нажми Play: сверху вкладка на каждый модуль, камера подлетает к
 выбранному примеру, на панели — его кнопки и состояние, в редакторе пример выделяется, и его
@@ -82,7 +107,7 @@ using Utils;
 Runtime/   сборка Utils — работает в игре
 Editor/    сборка Utils.Editor — только редактор
 Documentation/    подробные описания модулей
-Samples~/         сэмпл Utils Samples: Package Manager > Samples > Import (Unity не компилирует папки с ~)
+Samples~/         сэмплы Utils Samples и ProjectUI: Package Manager > Samples > Import (Unity не компилирует папки с ~)
 ```
 
 Изменения по версиям — [CHANGELOG.md](CHANGELOG.md).

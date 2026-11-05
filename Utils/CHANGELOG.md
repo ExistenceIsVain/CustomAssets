@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.2.0]
+
+### Добавлено
+
+- Сэмпл **ProjectUI** — основа uGUI (`ScreenManager`, `UIScreen`, `IAcceptArg` / `IReturnResult`,
+  `ScreenHistory`, `ScreenClamp`, `WorldUiRotator`), отдельная кнопка Import в Package Manager.
+  Ставится в `Assets/ProjectUI`, а не в `Assets/Samples`: сразу после импорта папку переносит
+  `SampleRelocator` (Utils.Editor). Если `Assets/ProjectUI` уже есть, импорт спрашивает и обновляет её:
+  файлы перезаписываются, `.meta` и GUID остаются старые, свои файлы не трогаются.
+  GUID скриптов совпадают с прежними копиями `Assets/ProjectUI` — ссылки в сценах и префабах сохраняются.
+
+### Изменено
+
+- ProjectUI: `WorldUiFacing` и `WorldUiRotator` перенесены из `RoadStory.UI` в namespace `ProjectUI`.
+
 ## [1.1.0]
 
 ### Добавлено
